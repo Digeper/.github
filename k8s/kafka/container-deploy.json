@@ -1,0 +1,52 @@
+{
+  "apiVersion": "2024-11-01",
+  "type": "Microsoft.ContainerInstance/containerGroups",
+  "location": "italynorth",
+  "properties": {
+    "containers": [{
+      "name": "slskd-daemon",
+      "properties": {
+        "image": "${ACR_NAME}.azurecr.io/muzika/slskd-daemon:latest",
+        "resources": {
+          "requests": {
+            "cpu": 1,
+            "memoryInGb": 1.5
+          }
+        },
+        "ports": [
+          {"port": 5030, "protocol": "TCP"},
+          {"port": 5031, "protocol": "TCP"},
+          {"port": 50300, "protocol": "TCP"}
+        ],
+        "environmentVariables": [
+          {"name": "APP_DIR", "value": "/app"},
+          {"name": "SLSKD_DOWNLOADS_DIR", "value": "/rw/downloads"},
+          {"name": "SLSKD_INCOMPLETE_DIR", "value": "/rw/incomplete"},
+          {"name": "SLSKD_REMOTE_CONFIGURATION", "value": "true"},
+          {"name": "SLSKD_SLSK_USERNAME", "value": "ABCSlime"},
+          {"name": "SLSKD_SLSK_PASSWORD", "value": "Anej1234!"},
+          {"name": "AZURE_STORAGE_ACCOUNT_NAME", "value": "${AZURE_STORAGE_ACCOUNT_NAME}"},
+          {"name": "AZURE_STORAGE_ACCOUNT_KEY", "value": "${AZURE_STORAGE_ACCOUNT_KEY}"},
+          {"name": "AZURE_STORAGE_CONTAINER_DOWNLOADS", "value": "slskd-downloads"},
+          {"name": "AZURE_STORAGE_CONTAINER_INCOMPLETE", "value": "slskd-incomplete"},
+          {"name": "AZURE_STORAGE_CONTAINER_DATABASE", "value": "slskd-database"}
+        ]
+      }
+    }],
+    "osType": "Linux",
+    "restartPolicy": "Always",
+    "ipAddress": {
+      "type": "Public",
+      "ports": [
+        {"port": 5030, "protocol": "TCP"},
+        {"port": 5031, "protocol": "TCP"},
+        {"port": 50300, "protocol": "TCP"}
+      ]
+    },
+    "imageRegistryCredentials": [{
+      "server": "${ACR_NAME}.azurecr.io",
+      "username": "${ACR_USERNAME}",
+      "password": "${ACR_PASSWORD}"
+    }]
+  }
+}

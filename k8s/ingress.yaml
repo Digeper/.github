@@ -1,0 +1,55 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: muzika-ingress
+  namespace: muzika
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/use-regex: "false"
+    # CORS configuration - handle at ingress level since backend is behind proxy
+    # Note: allow-credentials must be false when using wildcard origin (*)
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, DELETE, OPTIONS, PATCH, HEAD"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "false"
+    nginx.ingress.kubernetes.io/cors-max-age: "3600"
+    nginx.ingress.kubernetes.io/cors-expose-headers: "*"
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          # API paths must come before root path to ensure correct routing
+          # Authorization Manager
+          - path: /api/auth
+            pathType: Prefix
+            backend:
+              service:
+                name: authmanager
+                port:
+                  number: 8091
+          # Playlist Manager
+          - path: /api/playlist
+            pathType: Prefix
+            backend:
+              service:
+                name: playlistmanager
+                port:
+                  number: 8092
+          # Queue Manager
+          - path: /api/queue
+            pathType: Prefix
+            backend:
+              service:
+                name: queuemanager
+                port:
+                  number: 8090
+          # Root path - MuzikaPlayer frontend (must be last to catch all other routes)
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: muzikaplayer
+                port:
+                  number: 80

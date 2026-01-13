@@ -1,0 +1,8 @@
+# Namespace for Kafka
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kafka
+  labels:
+    name: kafka
+    app.kubernetes.io/part-of: muzika-platform

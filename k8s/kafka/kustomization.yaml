@@ -1,0 +1,16 @@
+# Kustomization for Kafka setup
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: kafka
+
+resources:
+  - namespace.yaml
+  - kafka-nodepool.yaml
+  - kafka-cluster.yaml
+  - kafka-topics.yaml
+
+labels:
+  - pairs:
+      app.kubernetes.io/managed-by: kustomize
+      app.kubernetes.io/part-of: muzika-platform

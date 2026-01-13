@@ -1,0 +1,31 @@
+# Kafka Node Pool - Single node with both controller and broker roles
+# This will run on the same nodes as your other services
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaNodePool
+metadata:
+  name: kafka-brokers
+  namespace: kafka
+  labels:
+    app: kafka
+    app.kubernetes.io/name: kafka
+    app.kubernetes.io/part-of: muzika-platform
+    strimzi.io/cluster: kafka-cluster
+spec:
+  replicas: 1
+  roles:
+    - controller
+    - broker
+  storage:
+    type: jbod
+    volumes:
+    - id: 0
+      type: persistent-claim
+      size: 10Gi
+      deleteClaim: false
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: "100m"
+    limits:
+      memory: 512Mi
+      cpu: "250m"
